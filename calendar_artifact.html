@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>자동 날짜 포토 캘린더</title>
+  <style>
+    :root {
+      --text: #2C2C2B;
+      --muted: #7D7A75;
+      --border: #E6E5E3;
+      --surface: #F9F8F7;    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #fff 0%, #f7f6f4 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+    }
+    .app {
+      width: min(920px, 100%);
+      padding: 24px;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 auto 18px;
+      max-width: 760px;
+    }
+    .title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .date-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    input[type="date"] {
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0 12px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      color-scheme: light;
+    }
+    .calendar {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: transparent;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .cards {
+      position: relative;
+      width: 100%;
+      height: 200%px; /* 큰 직사각형 안의 고정 영역 높이 */
+    }
+    .photo-card {
+    position: absolute;
+    top: 0;
+    width: 42%;
+    height: 100%;
+    aspect-ratio: auto;
+    min-height: 0;
+
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+
+    background:
+      radial-gradient(circle at 30% 20%, rgba(39,131,222,.12), transparent 34%),
+      linear-gradient(135deg, #fbfbfa, var(--surface));
+
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    isolation: isolate;
+    transition: transform .18s ease, border-color .18s ease;
+    }
+
+    #monthCard {
+      left: 4%;
+    }
+
+    #dayCard {
+      right: 4%;
+    }
+    .photo-card:hover,
+    .photo-card:focus-within {
+      transform: translateY(-2px);
+      border-color: rgba(39,131,222,.55);
+    }
+    .photo-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,.18) 34%, rgba(255,255,255,.55));
+      z-index: -1;
+    }
+    .photo-card.has-photo::before {
+      background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.05) 42%, rgba(255,255,255,.32));
+    }
+    .upload-hint {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 38px;
+      border: 1px dashed rgba(44,44,43,.26);
+      border-radius: 999px;
+      background: rgba(255,255,255,.74);
+      color: rgba(44,44,43,.7);
+      font-size: 13px;
+      font-weight: 560;
+      pointer-events: none;
+    }
+    .photo-card.has-photo .upload-hint {
+      opacity: 0;
+    }
+    .date-text {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: -0.07em;
+      line-height: 1;
+      color: #2C2C2B;
+      text-shadow: 0 1px 0 rgba(255,255,255,.65), 0 8px 28px rgba(255,255,255,.45);
+      mix-blend-mode: multiply;
+    }
+    #monthText { font-size: clamp(92px, 18vw, 178px); }
+    #dayText { font-size: clamp(92px, 18vw, 178px); }
+    .photo-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .weekday {
+      margin-top: 12px;
+      text-align: center;
+      font-size: clamp(30px, 5vw, 52px);
+      font-weight: 760;
+      letter-spacing: -0.04em;
+    }
+    .caption {
+      margin: 10px 0 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    @media (max-width: 640px) {
+      .app { padding: 18px; }
+      .toolbar { align-items: flex-start; flex-direction: column; margin-bottom: 14px; }
+      .calendar { padding: 18px; border-radius: 20px; }
+      .cards { gap: 12px; }
+      .photo-card { min-height: 245px; border-radius: 18px; }
+      .upload-hint { font-size: 12px; min-height: 34px; top: 10px; left: 10px; right: 10px; }
+    }
+    @media print {
+      body { background: transparent; }
+      .toolbar, .caption, .upload-hint { display: none; }
+      .calendar { box-shadow: none; border: none; padding: 0; }
+      .app { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="사진을 넣을 수 있는 자동 날짜 캘린더">
+    <div class="toolbar">
+      <h1 class="title"> </h1>
+    </div>
+
+    <section class="calendar">
+      <div class="cards">
+        <label class="photo-card" id="monthCard" aria-label="왼쪽 사진 넣기">
+          <span class="upload-hint">사진 넣기</span>
+          <span class="date-text" id="monthText">월</span>
+          <input class="photo-input" type="file" accept="image/*" data-target="monthCard" />
+        </label>
+        <label class="photo-card" id="dayCard" aria-label="오른쪽 사진 넣기">
+          <span class="upload-hint">사진 넣기</span>
+          <span class="date-text" id="dayText">일</span>
+          <input class="photo-input" type="file" accept="image/*" data-target="dayCard" />
+        </label>
+      </div>
+      <div class="weekday" id="weekdayText">요일</div>
+    </section>
+  </main>
+
+  <script>
+  const monthText = document.getElementById('monthText');
+  const dayText = document.getElementById('dayText');
+  const weekdayText = document.getElementById('weekdayText');
+
+  const weekdays = [
+    'DIMANCHE',
+    'LUNDI',
+    'MARDI',
+    'MERCREDI',
+    'JEUDI',
+    'VENDREDI',
+    'SAMEDI'
+  ];
+
+  function updateDate() {
+    const selected = new Date();
+
+    monthText.textContent =
+      String(selected.getMonth() + 1).padStart(2, '0');
+
+    dayText.textContent =
+      String(selected.getDate()).padStart(2, '0');
+
+    weekdayText.textContent =
+      weekdays[selected.getDay()];
+  }
+
+  updateDate();
+
+    document.querySelectorAll('.photo-input').forEach(input => {
+      input.addEventListener('change', event => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        const card = document.getElementById(event.target.dataset.target);
+        const reader = new FileReader();
+        reader.onload = () => {
+          card.style.backgroundImage = `url("${reader.result}")`;
+          card.classList.add('has-photo');
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+</body>
+</html>
