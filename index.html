@@ -77,6 +77,9 @@
     top: 0;
     width: 42%;
     height: 180px;
+
+    container-type: inline-size;
+
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: 22px;
@@ -84,6 +87,7 @@
     background:
       radial-gradient(circle at 30% 20%, rgba(39,131,222,.12), transparent 34%),
       linear-gradient(135deg, #fbfbfa, var(--surface));
+      url("sample.jpg") center / cover no-repeat;
 
     background-size: cover;
     background-position: center;
@@ -150,8 +154,8 @@
       text-shadow: 0 1px 0 rgba(255,255,255,.65), 0 8px 28px rgba(255,255,255,.45);
       mix-blend-mode: multiply;
     }
-    #monthText { font-size: clamp(92px, 18vw, 178px); font-variant-numeric: tabular-nums;}
-    #dayText { font-size: clamp(92px, 18vw, 178px); font-variant-numeric: tabular-nums;}
+    #monthText { font-size: clamp(92px, 38cqw, 178px); font-variant-numeric: tabular-nums;}
+    #dayText { font-size: clamp(92px, 38cqw, 178px); font-variant-numeric: tabular-nums;}
     .photo-input {
       position: absolute;
       inset: 0;
