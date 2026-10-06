@@ -96,12 +96,21 @@
     }
 
     #monthCard {
-      left: 4%;
+      left: 0;
+      width: 50%;
+      background-position: left center;
+      background-size: 200% 100%;
+      border-radius: 22px 0 0 22px;
+    }
+    
+    #dayCard {
+      right: 0;
+      width: 50%;
+      background-position: right center;
+      background-size: 200% 100%;
+      border-radius: 0 22px 22px 0;
     }
 
-    #dayCard {
-      right: 4%;
-    }
     .photo-card:hover,
     .photo-card:focus-within {
       transform: translateY(-2px);
@@ -249,9 +258,15 @@
         const card = document.getElementById(event.target.dataset.target);
         const reader = new FileReader();
         reader.onload = () => {
-          card.style.backgroundImage = `url("${reader.result}")`;
-          card.classList.add('has-photo');
-        };
+        document.getElementById('monthCard').style.backgroundImage =
+          `url("${reader.result}")`;
+        
+        document.getElementById('dayCard').style.backgroundImage =
+          `url("${reader.result}")`;
+        
+        document.getElementById('monthCard').classList.add('has-photo');
+        document.getElementById('dayCard').classList.add('has-photo');
+
         reader.readAsDataURL(file);
       });
     });
