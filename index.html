@@ -97,11 +97,16 @@
 
     #monthCard {
       left: 4%;
+      background-position: left center;
+      background-size: 200% 100%;
     }
-
+    
     #dayCard {
       right: 4%;
+      background-position: right center;
+      background-size: 200% 100%;
     }
+
     .photo-card:hover,
     .photo-card:focus-within {
       transform: translateY(-2px);
@@ -246,13 +251,20 @@
       input.addEventListener('change', event => {
         const file = event.target.files && event.target.files[0];
         if (!file) return;
-        const card = document.getElementById(event.target.dataset.target);
         const reader = new FileReader();
+        
         reader.onload = () => {
-          card.style.backgroundImage = `url("${reader.result}")`;
-          card.classList.add('has-photo');
+          const image = `url("${reader.result}")`;
+        
+          document.getElementById('monthCard').style.backgroundImage = image;
+          document.getElementById('dayCard').style.backgroundImage = image;
+        
+          document.getElementById('monthCard').classList.add('has-photo');
+          document.getElementById('dayCard').classList.add('has-photo');
         };
+        
         reader.readAsDataURL(file);
+
       });
     });
   </script>
