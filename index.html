@@ -69,6 +69,7 @@
     position: relative;
     width: 100%;
     height: 180px;
+    container-type: inline-size;
     }
   
     .photo-card {
@@ -138,6 +139,8 @@
       inset: 0;
       display: flex;
       place-items: center;
+      justify-content: center;
+      margin: 0;
       padding: 0;
       text-align: center;
       font-weight: 800;
@@ -147,8 +150,8 @@
       text-shadow: 0 1px 0 rgba(255,255,255,.65), 0 8px 28px rgba(255,255,255,.45);
       mix-blend-mode: multiply;
     }
-    #monthText { font-size: clamp(92px, 18vw, 178px); }
-    #dayText { font-size: clamp(92px, 18vw, 178px); }
+    #monthText { font-size: clamp(92px, 18vw, 178px); font-variant-numeric: tabular-nums;}
+    #dayText { font-size: clamp(92px, 18vw, 178px); font-variant-numeric: tabular-nums;}
     .photo-input {
       position: absolute;
       inset: 0;
